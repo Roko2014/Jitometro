@@ -1,0 +1,13 @@
+train: D:\Jitomate_Rendimiento_IA\Jitomate_python\Jitomate_IA_15Nov2025\train\
+val: D:\Jitomate_Rendimiento_IA\Jitomate_python\Jitomate_IA_15Nov2025\valid\
+test: D:\Jitomate_Rendimiento_IA\Jitomate_python\Jitomate_IA_15Nov2025\test\
+
+nc: 4
+names: ['3', '4', '5', '6']
+
+roboflow:
+  workspace: jitomate-mexico
+  project: jitomate-indice-madurez
+  version: 2
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/jitomate-mexico/jitomate-indice-madurez/dataset/2
