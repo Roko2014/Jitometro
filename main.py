@@ -22,9 +22,9 @@ line_points = [(line_x, 0), (line_x, h)]
 counter = solutions.ObjectCounter(
     show=True,                # Muestra el video en tiempo real
     region=line_points,          # Línea vertical a la derecha
-    names=model.names,            # ['3', '4', '5', '6']
-    draw_tracks=True,             # Dibuja el rastro del seguimiento
-    line_thickness=2,
+    #No necesario: names=model.names,            # ['3', '4', '5', '6']
+    #draw_tracks=True,             # Dibuja el rastro del seguimiento
+    #line_thickness=2,
 )
 
 print(f"Procesando con línea de conteo en X={line_x} (Zona de mayor claridad)...")
@@ -34,14 +34,13 @@ while cap.isOpened():
     if not success:
         break
 
-    # Tracking con persistencia
-    # classes=[0, 1, 2, 3] asegura que solo rastree tus 4 categorías
+    # Tracking de tus 4 clases de madurez (['3', '4', '5', '6'])
     tracks = model.track(im0, persist=True, show=False, classes=[0, 1, 2, 3])
 
-    # Aplicar lógica de conteo
-    im0 = counter.start_counting(im0, tracks)
+    # NUEVA FORMA: El counter se llama directamente, ya no usa .start_counting()
+    im0 = counter.count(im0, tracks)
 
-    # Presiona 'q' para cerrar la ventana manualmente si es necesario
+    # Salir con 'q'
     if cv2.waitKey(1) & 0xFF == ord("q"):
         break
 
@@ -50,13 +49,17 @@ cv2.destroyAllWindows()
 
 # 5. Exportación de resultados a Excel
 reporte_datos = []
-for label, counts in counter.class_wise_count.items():
-    # Sumamos IN y OUT para obtener el total de cruces en esa línea
-    total_clase = counts.get('IN', 0) + counts.get('OUT', 0)
-    reporte_datos.append({"Nivel de Madurez": label, "Total": total_clase})
+
+# En las nuevas versiones, los conteos se guardan de forma más directa
+# Extraemos el conteo por cada clase detectada
+for label, count in counter.class_wise_count.items():
+    reporte_datos.append({
+        "Nivel de Madurez": label,
+        "Total Detectado": count
+    })
 
 df = pd.DataFrame(reporte_datos)
-df.to_excel("Reporte_Jitomates_Primer_Plano.xlsx", index=False)
+df.to_excel("Reporte_Jitomates_Final.xlsx", index=False)
 
 print("\n" + "="*40)
 print(f"Reporte generado: Reporte_Jitomates_Primer_Plano.xlsx")
