@@ -6,13 +6,13 @@ from ultralytics import solutions
 cap = cv2.VideoCapture("Macizo_1_1Corte.MOV")
 assert cap.isOpened(), "Error reading video file"
 
-region_points = [(2000, 0), (2000, 1880)]                                      # line counting
+region_points = [(2000, 3800), (2000, 0)]                                      # line counting
 # region_points = [(20, 400), (1080, 400), (1080, 360), (20, 360)]  # rectangle region
 # region_points = [(20, 400), (1080, 400), (1080, 360), (20, 360), (20, 400)]   # polygon region
 
 # Video writer
 w, h, fps = (int(cap.get(x)) for x in (cv2.CAP_PROP_FRAME_WIDTH, cv2.CAP_PROP_FRAME_HEIGHT, cv2.CAP_PROP_FPS))
-video_writer = cv2.VideoWriter("Pruebita7.avi", cv2.VideoWriter_fourcc(*"mp4v"), fps, (w, h))
+video_writer = cv2.VideoWriter("Pruebita14.avi", cv2.VideoWriter_fourcc(*"mp4v"), fps, (w, h))
 
 # Initialize object counter object
 counter = solutions.ObjectCounter(
