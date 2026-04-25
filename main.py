@@ -1,66 +1,46 @@
+import ultralytics
 import cv2
-import pandas as pd
-from ultralytics import YOLO, solutions
+from ultralytics.utils.downloads import safe_download
+from ultralytics import solutions
 
-# 1. Cargar el modelo
-model = YOLO("best_jitomate_v1_17032026.pt")
+ultralytics.checks()
 
-# 2. Configurar captura de video
-cap = cv2.VideoCapture("Macizo_1_1Corte.MOV")
-assert cap.isOpened(), "Error al abrir el video"
+cap = cv2.VideoCapture("Macizo 1 1Corte.mp4") # Replace with your video file path
+assert cap.isOpened(), "Error reading video file"
 
-w, h, fps = (int(cap.get(x)) for x in [cv2.CAP_PROP_FRAME_WIDTH,
+# Define region points
+region_points = [(850, 0), (850, 1080)] # For vertical line counting
+# region_points = [(20, 400), (1080, 400)]  # For horizontal line counting
+# region_points = [(20, 400), (1080, 400), (1080, 360), (20, 360)]  # For rectangle region counting
+# region_points = [(20, 400), (1080, 400), (1080, 360), (20, 360), (20, 400)]  # For polygon region counting
+
+#Video writer
+w, h, fps = (int(cap.get(x)) for x in (cv2.CAP_PROP_FRAME_WIDTH,
                                        cv2.CAP_PROP_FRAME_HEIGHT,
-                                       cv2.CAP_PROP_FPS])
+                                       cv2.CAP_PROP_FPS))
 
-# 3. Definir línea de conteo VERTICAL a la derecha
-# Multiplicamos por 0.85 para situarla donde dibujaste tu línea azul
-line_x = int(w * 0.85)
-line_points = [(line_x, 0), (line_x, h)]
-
-# 4. Inicializar el Contador de Ultralytics
+# Video writer
+video_writer = cv2.VideoWriter("Macizo_1_1Corte_Conteo_14Julio2026.avi",
+                               cv2.VideoWriter_fourcc(*"mp4v"),
+                               fps, (w, h))
+# Init ObjectCounter
 counter = solutions.ObjectCounter(
-    show=True,                # Muestra el video en tiempo real
-    region=line_points,          # Línea vertical a la derecha
-    #No necesario: names=model.names,            # ['3', '4', '5', '6']
-    #draw_tracks=True,             # Dibuja el rastro del seguimiento
-    #line_thickness=2,
+    show=True,  # Display the output
+    region=region_points,  # Pass region points
+    model="best_jitomate_v1_17032026.pt",  # model="yolo26n-obb.pt" for object counting using YOLO26 OBB model.
+    classes=[3, 4, 5, 6],  # If you want to count specific classes i.e person and car with COCO pretrained model.
+    show_in=True,  # Display in counts
+    # show_out=True,  # Display out counts
+    # line_width=2,  # Adjust the line width for bounding boxes and text display
 )
-
-print(f"Procesando con línea de conteo en X={line_x} (Zona de mayor claridad)...")
-
+# Process video
 while cap.isOpened():
     success, im0 = cap.read()
     if not success:
+        print("Video frame is empty or video processing has been successfully completed.")
         break
+    results = counter(im0)  # count the objects
+    video_writer.write(results.plot_im)   # write the video frames
 
-    # Tracking de tus 4 clases de madurez (['3', '4', '5', '6'])
-    tracks = model.track(im0, persist=True, show=False, classes=[0, 1, 2, 3])
-
-    # NUEVA FORMA: El counter se llama directamente, ya no usa .start_counting()
-    im0 = counter.count(im0, tracks)
-
-    # Salir con 'q'
-    if cv2.waitKey(1) & 0xFF == ord("q"):
-        break
-
-cap.release()
-cv2.destroyAllWindows()
-
-# 5. Exportación de resultados a Excel
-reporte_datos = []
-
-# En las nuevas versiones, los conteos se guardan de forma más directa
-# Extraemos el conteo por cada clase detectada
-for label, count in counter.class_wise_count.items():
-    reporte_datos.append({
-        "Nivel de Madurez": label,
-        "Total Detectado": count
-    })
-
-df = pd.DataFrame(reporte_datos)
-df.to_excel("Reporte_Jitomates_Final.xlsx", index=False)
-
-print("\n" + "="*40)
-print(f"Reporte generado: Reporte_Jitomates_Primer_Plano.xlsx")
-print("="*40)
+cap.release()   # Release the capture
+video_writer.release()
