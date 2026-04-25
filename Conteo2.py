@@ -1,7 +1,7 @@
 import cv2
 from torch.xpu import device
-
 from ultralytics import solutions
+import csv
 
 cap = cv2.VideoCapture("Macizo_1_1Corte.MOV")
 assert cap.isOpened(), "Error reading video file"
