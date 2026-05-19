@@ -4,7 +4,7 @@ from datetime import datetime
 from ultralytics import solutions
 
 # ── Configuración ─────────────────────────────────────────────────────────────
-VIDEO_PATH = "Macizo_1_1Corte.MOV"
+VIDEO_PATH = "Macizo_Moctezuma/Macizo_1_1Corte.MOV"
 
 cap = cv2.VideoCapture(VIDEO_PATH)
 assert cap.isOpened(), "Error reading video file"
@@ -15,7 +15,7 @@ w, h, fps = (int(cap.get(x)) for x in (cv2.CAP_PROP_FRAME_WIDTH,
                                          cv2.CAP_PROP_FRAME_HEIGHT,
                                          cv2.CAP_PROP_FPS))
 
-video_writer = cv2.VideoWriter("Pruebita19.avi",
+video_writer = cv2.VideoWriter("Macizo_1_1Corte_Jitometro_v2.mp4",
                                cv2.VideoWriter_fourcc(*"mp4v"), fps, (w, h))
 
 counter = solutions.ObjectCounter(
@@ -23,10 +23,11 @@ counter = solutions.ObjectCounter(
     show_in=True,
     show_out=False,
     region=region_points,
-    model="runs/detect/train/weights/best.pt",
+    model="best_v2.pt",
     verbose=True,
     conf=0.2,
     show_conf=True,
+    classes=[0, 1, 2],
     tracker="botsort.yaml",
     show_labels=True,
 )
@@ -48,7 +49,7 @@ print("classwise_counts:", counter.classwise_count)
 
 # ── Exportar resultados al terminar ──────────────────────────────────────────
 # Las clases de madurez que te interesan
-CLASES_MADUREZ = {"3", "4", "5", "6"}
+CLASES_MADUREZ = {"0", "1", "2"}
 
 # counter.classwise_counts → {"3": {"IN": n, "OUT": n}, "4": {...}, ...}
 # Solo tomamos las clases 3-6; si una no apareció en el video, conteo = 0

@@ -4,6 +4,7 @@
 # Pesos de YOLO (Evita que el repo sea pesadísimo)
 *.pt
 runs/
+jitomate_v1_17marzo2026/
 
 # Datasets de entrenamiento
 test/
@@ -13,6 +14,9 @@ valid/
 # Archivos multimedia y comprimidos
 *.avi
 *.zip
+*.mp4
+Macizo_Moctezuma/
+Conteo_v1/
 
 # Archivos de PyCharm
 .idea/

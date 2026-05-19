@@ -5,7 +5,7 @@ from ultralytics import solutions
 
 ultralytics.checks()
 
-cap = cv2.VideoCapture("Macizo 1 1Corte.mp4") # Replace with your video file path
+cap = cv2.VideoCapture("Macizo_Moctezuma/Macizo_1_1Corte.MOV") # Replace with your video file path
 assert cap.isOpened(), "Error reading video file"
 
 # Define region points
@@ -20,15 +20,15 @@ w, h, fps = (int(cap.get(x)) for x in (cv2.CAP_PROP_FRAME_WIDTH,
                                        cv2.CAP_PROP_FPS))
 
 # Video writer
-video_writer = cv2.VideoWriter("Macizo_1_1Corte_Conteo_14Julio2026.avi",
+video_writer = cv2.VideoWriter("Macizo_1_1Corte_Conteo_v2.mp4",
                                cv2.VideoWriter_fourcc(*"mp4v"),
                                fps, (w, h))
 # Init ObjectCounter
 counter = solutions.ObjectCounter(
     show=True,  # Display the output
     region=region_points,  # Pass region points
-    model="best_jitomate_v1_17032026.pt",  # model="yolo26n-obb.pt" for object counting using YOLO26 OBB model.
-    classes=[3, 4, 5, 6],  # If you want to count specific classes i.e person and car with COCO pretrained model.
+    model="best_v2.pt",  # model="yolo26n-obb.pt" for object counting using YOLO26 OBB model.
+    classes=[0, 1, 2],  # If you want to count specific classes i.e person and car with COCO pretrained model.
     show_in=True,  # Display in counts
     # show_out=True,  # Display out counts
     # line_width=2,  # Adjust the line width for bounding boxes and text display

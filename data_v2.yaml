@@ -1,0 +1,21 @@
+# data_v2.yaml — Jitometro v2 (3 clases simplificadas)
+# Mapeo desde índice USDA original:
+#   Clase original '3' (idx 0) → Semimaduro (idx 1)
+#   Clase original '4' (idx 1) → Semimaduro (idx 1)
+#   Clase original '5' (idx 2) → Maduro     (idx 2)
+#   Clase original '6' (idx 3) → Maduro     (idx 2)
+# Si agregas clases 1 y 2 del USDA en el futuro → Inmaduro (idx 0)
+
+train: D:\Jitomate_Rendimiento_IA\Jitomate_python\Jitomate_IA_v2\train\
+val:   D:\Jitomate_Rendimiento_IA\Jitomate_python\Jitomate_IA_v2\valid\
+test:  D:\Jitomate_Rendimiento_IA\Jitomate_python\Jitomate_IA_v2\test\
+
+nc: 3
+names: ['Inmaduro', 'Semimaduro', 'Maduro']
+
+roboflow:
+  workspace: jitomate-mexico
+  project: jitomate-indice-madurez
+  version: 3
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/jitomate-mexico/jitomate-indice-madurez/dataset/2
